@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import ClickOutside from "@/components/ClickOutside";
-
+const BaseUrl = process.env.NEXT_PUBLIC_API_URL;
 const DropdownNotification = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifying, setNotifying] = useState(true);

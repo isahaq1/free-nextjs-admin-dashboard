@@ -2,9 +2,24 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import ClickOutside from "@/components/ClickOutside";
+import LogoutButton from "@/components/LogoutButton";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const storedAuthUser = localStorage.getItem("authUser");
+  let authusername = "";
+  let authemail = "";
+  let authprofileImage = "";
+
+  if (storedAuthUser) {
+    const authUser = JSON.parse(storedAuthUser);
+
+    authusername = authUser.username;
+    authemail = authUser.email;
+    authprofileImage = authUser.profileImage;
+  }
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
@@ -15,20 +30,21 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+            {authusername}
           </span>
-          <span className="block text-xs">UX Designer</span>
+          <span className="block text-xs">Programmer</span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
           <Image
             width={112}
             height={112}
-            src={"/images/user/user-01.png"}
+            src={`${apiUrl}/files${authprofileImage}`}
             style={{
               width: "auto",
               height: "auto",
             }}
+            className="h-5 w-5 rounded-full"
             alt="User"
           />
         </span>
@@ -146,7 +162,7 @@ const DropdownUser = () => {
                 fill=""
               />
             </svg>
-            Log Out
+            <LogoutButton />
           </button>
         </div>
       )}

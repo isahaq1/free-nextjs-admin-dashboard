@@ -1,20 +1,42 @@
-import React from "react";
+"use client";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { Metadata } from "next";
-import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
-export const metadata: Metadata = {
-  title: "Next.js SignIn Page | TailAdmin - Next.js Dashboard Template",
-  description: "This is Next.js Signin Page TailAdmin Dashboard Template",
-};
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "@/redux/slices/authSlice";
+import { AppDispatch, RootState } from "@/redux/store";
+import { toast, ToastContainer } from "react-toastify";
 
-const SignIn: React.FC = () => {
+import { useRouter } from "next/navigation";
+
+export default function Login() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    try {
+      e.preventDefault();
+      const result = await dispatch(loginUser({ username, password }));
+      if (loginUser.fulfilled.match(result)) {
+        router.push("/");
+      } else {
+        const errorMessage =
+          (result.payload as { message?: string })?.message ||
+          "Invalid credentials";
+        toast.error(errorMessage); // Show error toastr with dynamic message
+      }
+    } catch (error) {
+      toast.error((error as Error).message);
+    }
+  };
+
   return (
-    <DefaultLayout>
-      <Breadcrumb pageName="Sign In" />
-
+    <div>
+      <ToastContainer />
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
@@ -47,7 +69,7 @@ const SignIn: React.FC = () => {
                   height="350"
                   viewBox="0 0 350 350"
                   fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns="http:www.w3.org/2000/svg"
                 >
                   <path
                     d="M33.5825 294.844L30.5069 282.723C25.0538 280.414 19.4747 278.414 13.7961 276.732L13.4079 282.365L11.8335 276.159C4.79107 274.148 0 273.263 0 273.263C0 273.263 6.46998 297.853 20.0448 316.653L35.8606 319.429L23.5737 321.2C25.2813 323.253 27.1164 325.196 29.0681 327.019C48.8132 345.333 70.8061 353.736 78.1898 345.787C85.5736 337.838 75.5526 316.547 55.8074 298.235C49.6862 292.557 41.9968 288.001 34.2994 284.415L33.5825 294.844Z"
@@ -173,15 +195,18 @@ const SignIn: React.FC = () => {
                 Sign In to TailAdmin
               </h2>
 
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    Email
+                    Username
                   </label>
                   <div className="relative">
                     <input
-                      type="email"
-                      placeholder="Enter your email"
+                      type="text"
+                      value={username}
+                      placeholder="Enter your username"
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
 
@@ -192,7 +217,7 @@ const SignIn: React.FC = () => {
                         height="22"
                         viewBox="0 0 22 22"
                         fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns="http:www.w3.org/2000/svg"
                       >
                         <g opacity="0.5">
                           <path
@@ -213,6 +238,9 @@ const SignIn: React.FC = () => {
                     <input
                       type="password"
                       placeholder="6+ Characters, 1 Capital letter"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
 
@@ -223,7 +251,7 @@ const SignIn: React.FC = () => {
                         height="22"
                         viewBox="0 0 22 22"
                         fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns="http:www.w3.org/2000/svg"
                       >
                         <g opacity="0.5">
                           <path
@@ -255,7 +283,7 @@ const SignIn: React.FC = () => {
                       height="20"
                       viewBox="0 0 20 20"
                       fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns="http:www.w3.org/2000/svg"
                     >
                       <g clipPath="url(#clip0_191_13499)">
                         <path
@@ -298,8 +326,6 @@ const SignIn: React.FC = () => {
           </div>
         </div>
       </div>
-    </DefaultLayout>
+    </div>
   );
-};
-
-export default SignIn;
+}

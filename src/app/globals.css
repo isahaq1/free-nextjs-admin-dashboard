@@ -1,0 +1,12 @@
+.dashboard-chart {
+  display: inline-block;
+  position: relative;
+}
+
+.dashboard-chart svg {
+  transform: rotate(-90deg);
+}
+
+.dashboard-chart svg text {
+  transform: rotate(90deg);
+}

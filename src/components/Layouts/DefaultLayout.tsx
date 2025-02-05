@@ -2,6 +2,8 @@
 import React, { useState, ReactNode } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
+import { Provider } from "react-redux";
+import store from "@/redux/store";
 
 export default function DefaultLayout({
   children,
